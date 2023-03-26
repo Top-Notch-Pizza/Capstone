@@ -64,9 +64,11 @@
         $postalcode = mysqli_real_escape_string($con, $postalcode);
         $phone = stripslashes($_REQUEST['phone']);
         $phone = mysqli_real_escape_string($con, $phone);
+        $usertype = stripslashes($_REQUEST['usertype']);
+        $usertype = mysqli_real_escape_string($con, $usertype);
        
-        $query    = "INSERT into users (email,firstname,lastname,password,street,city,province,postalcode,phone)
-                     VALUES ('$email', '$firstname','$lastname','" . md5($password) . "', '$street', '$city','$province','$postalcode','$phone')";
+        $query    = "INSERT into users (email,firstname,lastname,password,street,city,province,postalcode,phone,usertype)
+                     VALUES ('$email', '$firstname','$lastname','" . md5($password) . "', '$street', '$city','$province','$postalcode','$phone','$usertype')";
         $result   = mysqli_query($con, $query);
         if ($result) {
             echo "<div class='form'>
@@ -190,6 +192,15 @@
 
 <label for="phone">Phone:</label>
 <input id="phone" class="form-control" name="phone" type="number" required />
+
+<br>
+<br>
+    </div>
+ <p>Please select user type:</p>
+ <input type="radio" id="usertype" name="usertype" value="admin">
+ <label for="admin">Admin</label><br>
+ <input type="radio" id="usertype" name="usertype" value="customer">
+ <label for="customer">Customer</label><br>
 
 <br>
 <br>
