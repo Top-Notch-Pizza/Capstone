@@ -1702,3 +1702,7 @@ section {
 .footer .credits a {
   color: #fff;
 }
+/* pizza css*/
+.buttonpizza{
+  background-color: #ce1212 !important; 
+}

@@ -197,9 +197,9 @@
 <br>
     </div>
  <p>Please select user type:</p>
- <input type="radio" id="usertype" name="usertype" value="admin">
+ <input type="radio"  id="usertype" name="usertype" value="admin">
  <label for="admin">Admin</label><br>
- <input type="radio" id="usertype" name="usertype" value="customer">
+ <input type="radio"  id="usertype" name="usertype" value="customer">
  <label for="customer">Customer</label><br>
 
 <br>
@@ -207,7 +207,7 @@
     </div>
     <div class="form-group">
 
-<input class="btn btn-primary" name="Submit" type="Submit" value="Register" />
+<input class="btn btn-danger" name="Submit" type="Submit" value="Register" />
 
     </div>
     </div>

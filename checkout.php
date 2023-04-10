@@ -208,7 +208,7 @@
     </div>
     <div class="form-group">
 
-<input class="btn btn-primary" name="Submit" type="Submit" value="Checkout" />
+<input class="btn btn-danger" name="Submit" type="Submit" value="Checkout" />
 
     </div>
     </div>

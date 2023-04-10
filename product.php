@@ -135,15 +135,19 @@ switch($_GET["action"]) {
   <main id="main">
     <body>
 <div>
-<div>Pizza Cart</div>
+<h2 class="mb-4" style="text-align:center">Pizza Cart</h2>
+<br>
+&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 
+&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 
 
-<a id="btnEmpty" href="product.php?action=empty">Empty Cart</a>
+<a class="btn btn-danger" id="btnEmpty" href="product.php?action=empty">Empty Cart</a>
 <?php
 if(isset($_SESSION["cart_item"])){
     $total_quantity = 0;
     $total_price = 0;
 ?>  
-<table class="tbl-cart" cellpadding="10" cellspacing="1">
+<table cellpadding="10" cellspacing="1">
 <tbody>
 <tr>
 <th style="text-align:left;">Name</th>
@@ -182,14 +186,17 @@ if(isset($_SESSION["cart_item"])){
   <?php
 } else {
 ?>
-<div class="no-records">Your Cart is Empty</div>
+<br>
+<br>
+<h4 class="h6 mb-4 text-secondary" style="text-align:center">Your Cart is Empty</h4>
 <?php 
 }
 ?>
 </div>
     
 </br>
-    <form id="filter" method="post" >
+
+<form action="" method="GET">
 
     <div class="container">
     <div class="row justify-content-center">
@@ -199,16 +206,36 @@ if(isset($_SESSION["cart_item"])){
         <?php 
         $query = "SELECT * FROM categories ORDER BY idCategories ASC";
         $result =  mysqli_query($con, $query);
-        if ($result) {
-            while ($row = $result->fetch_assoc()) {
-                ?>
-                <div class="me-4 mb-2">
-                    <input type="checkbox" name="category[]" value="<?php echo $row['idCategories']; ?>" class="form-check-input"/>
-                    <label for="cat"><?php echo $row['categoryName']; ?></label><br>
-                </div>
-                <?php
-            }
-        }?>
+        if(mysqli_num_rows($result) > 0)
+        {
+               foreach($result as $category)
+          {
+        $checked = [];
+        if(isset($_GET['category']))
+        {
+            $checked = $_GET['category'];
+        }
+        ?>
+         <div>
+         &nbsp
+                <input type="checkbox" name="category[]" value="<?= $category['idCategories']; ?>" 
+                    <?php if(in_array($category['idCategories'], $checked)){ echo "checked"; } ?>
+                  
+                 />
+                &nbsp
+                 <span>
+                <?= $category['categoryName']; ?></span>
+                <br><br>
+            </div>
+        <?php
+    }
+}
+else
+{
+    echo "No category Found";
+}
+?>
+
     </div>
     
     </div>
@@ -226,52 +253,76 @@ if(isset($_SESSION["cart_item"])){
  require ('db.php');
 //Select Database
 
-
-$query = "SELECT p.*  FROM pizza AS p INNER JOIN categories AS c ON p.productCategory = c.idCategories";
-$result = mysqli_query($con, $query);
-
 ?>
 
 
-<div class="container text-center">
-  <div class="row">
-        <?php while ($row = $result->fetch_assoc())
-        {?>
-       <div class="col border mb-3">
-       <h2 class="mb-4"><?php echo $row['category']; ?></h2>
-       <h4 class="mb-3"><?php echo $row['name']; ?></h4>
-       <p class="h6 mb-4 text-success"><?php echo $row['description']; ?></p>
-       <img src="assets/img/<?php echo $row['image']; ?>"/>
-       <p class="h6 mb-4 text-success"><?php echo $row['Calories']; ?></p>
-        </div>
-        <?php } ?>
-        </div>
-        </div>
 
-        <br>
-
-        <div>
-  <div>Products</div>
+  
   <?php
+
+if(isset($_GET['category']))
+{
+    $branchecked = [];
+    $branchecked = $_GET['category'];
+    foreach($branchecked as $rowcategory)
+    {
+        // echo $rowcategory;
+        $products = "SELECT * FROM pizza WHERE productCategory IN ($rowcategory)";
+        $products_run = mysqli_query($con, $products);
+        if(mysqli_num_rows($products_run) > 0)
+        {
+            foreach($products_run as $proditems) :
+                ?>
+                    <div class="container text-center">
+                    <div class="row">
+                     <div class="col border mb-3">
+                        <h2 class="mb-4"><?=  $proditems['category']; ?></h2>
+                        <form method="post" action="product.php?action=add&name=<?= $proditems['name']; ?>">
+                            <p class="h6 mb-4 text-success"><?=   $proditems['description']; ?></p>
+                            <img src="assets/img/<?=  $proditems["image"]; ?>">
+                            <div><?=  $proditems["name"]; ?></div>
+                            <div><?=  $proditems["Price"]; ?></div>
+                            <p class="h6 mb-4 text-success"><?=  $proditems['Calories']; ?></p>
+                            <input type="text" class="product-quantity" name="quantity" value="1" size="2" />
+                            &nbsp<input class="btn btn-danger" type="submit" value="Add to Cart" class="btnAddAction" />
+                        </div>
+                    </div>
+                    </div>
+                <?php
+            endforeach;
+        }
+    }
+}
+else
+{
   $product_array = $db_handle->runQuery("SELECT * FROM pizza ORDER BY id");
   if (!empty($product_array)) { 
     foreach($product_array as $key=>$value){
   ?>
-    <div>
-      <form method="post" action="product.php?action=add&name=<?php echo $product_array[$key]["name"]; ?>">
-      <div><img src="assets/img/<?php echo $product_array[$key]["image"]; ?>"></div>
-      <div>
+    
+<div class="container text-center">
+  <div class="row">
+    <div class="col border mb-3">
+      <h2 class="mb-4"><?php  echo $product_array[$key]['category']; ?></h2>
+        <form method="post" action="product.php?action=add&name=<?php echo $product_array[$key]["name"]; ?>">
+        <p class="h6 mb-4 text-success"><?php echo $product_array[$key]['description']; ?></p>
+        <img src="assets/img/<?php echo $product_array[$key]["image"]; ?>">
+        
       <div><?php echo $product_array[$key]["name"]; ?></div>
       <div><?php echo "$".$product_array[$key]["Price"]; ?></div>
-      <div><input type="text" class="product-quantity" name="quantity" value="1" size="2" /><input type="submit" value="Add to Cart" class="btnAddAction" /></div>
+      <p class="h6 mb-4 text-success"><?php echo $product_array[$key]['Calories']; ?></p>
+      <input type="text" class="product-quantity" name="quantity" value="1" size="2" /><input type="submit" value="Add to Cart" class="btnAddAction" />
       </div>
-      </form>
     </div>
+    </div>
+      </form>
+    
   <?php
     }
   }
+}
   ?>
-</div>
+
     <body>
 </main><!-- End #main -->
   <!-- ======= About Section ======= -->

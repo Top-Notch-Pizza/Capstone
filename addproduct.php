@@ -122,9 +122,9 @@ include("auth_session.php");
     <body>
         <br>
 <tbody>
+<center>
 <table>
 <form  method="post">
-
 <div class="row">
             <div class="col-xl-6 form-group">
 <tr>
@@ -158,13 +158,19 @@ include("auth_session.php");
 <td><input id="image" class="form-control" maxlength="100" name="image" type="text" required/></td>
 </tr>
     </div>
+    
 <br>
 <br>
-    </div>
+    
     <div class="form-group">
+    <div class="container">
+    <div class="row justify-content-center">
 <tr>
-<td><input class="btn btn-primary" name="Submit" type="Submit" value="Add Product" /></td>
+<td><input class="btn btn-danger" name="Submit" type="Submit" width="100px" value="Add Product" /></td>
 </tr>
+    </div>
+    </div>
+    </div>
     </div>
     </div>
 </form>
@@ -172,6 +178,7 @@ include("auth_session.php");
     }
 ?>
 </table>
+</center>
 <br>
 </tbody>
 </main><!-- End #main -->
