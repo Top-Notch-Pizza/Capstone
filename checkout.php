@@ -1,3 +1,10 @@
+<?php
+//include auth_session.php file on all user panel pages
+require('db.php');
+include("auth_session.php");
+?>
+
+
 <html>
 <head>
 <meta charset="utf-8">
@@ -25,7 +32,6 @@
 
   <!-- Template Main CSS File -->
   <link href="assets/css/main.css" rel="stylesheet">
-
   <!-- =======================================================
   * Template Name: Yummy - v1.3.0
   * Template URL: https://bootstrapmade.com/yummy-bootstrap-restaurant-website-template/
@@ -37,40 +43,6 @@
 <h2>Checkout</h2>
 
 
-
-<?php
-    require('db.php');
-    // When form submitted, insert values into the database.
-    if (isset($_REQUEST['email'])) {
-        $email    = stripslashes($_REQUEST['email']);
-        $firstname = stripslashes($_REQUEST['firstname']);
-        $lastname = stripslashes($_REQUEST['lastname']);
-        $street = stripslashes($_REQUEST['street']);
-        $city = stripslashes($_REQUEST['city']);
-        $province = stripslashes($_REQUEST['province']);
-        $postalcode = stripslashes($_REQUEST['postalcode']);
-        $phone = stripslashes($_REQUEST['phone']);
-        $cardno = stripslashes($_REQUEST['cardno']);
-        $name = stripslashes($_REQUEST['name']);
-        $date = stripslashes($_REQUEST['date']);
-        $CVC = stripslashes($_REQUEST['CVC']);
-       
-        $query    = "INSERT into checkout (email,firstname,lastname,street,city,province,postalcode,phone,cardno,name,exdate,CVC)
-                     VALUES ('$email', '$firstname','$lastname', '$street', '$city','$province','$postalcode','$phone','$cardno','$name','$date','$CVC')";
-        $result   = mysqli_query($con, $query);
-        if ($result) {
-            echo "<div class='form'>
-                  <h3>Next Page</h3><br/>
-                  <p class='link'>Click here to see<a href='product.php'>Products</a></p>
-                  </div>";
-        } else {
-            echo "<div class='form'>
-                  <h3>Required fields are missing.</h3><br/>
-                  <p class='link'>Click here to <a href='checkout.php'>checkout</a> again.</p>
-                  </div>";
-        }
-    }else {
-?>
 <!-- ======= Header ======= -->
 <header id="header" class="header fixed-top d-flex align-items-center">
     <div class="container d-flex align-items-center justify-content-between">
@@ -122,33 +94,42 @@
         <br>
 
 
-<form  method="post">
+<form  action="pay.php" method="post">
 <div class="container" style="width: 50%;">
-
+<br>
+<input type="hidden" name="product_name" value="<?php echo $_GET['name']; ?>" ><br/><br/>
+<br>
+<input type="hidden" name="amount" value="<?php echo $_GET['price']; ?>" ><br/><br/>
+<br>
+<br>
+<label for="name">Product Name: </label>
+<input type="text" name="product_name" placeholder="name" disabled value="<?php echo $_GET['name']; ?>" ><br/><br/>
+<br>
+<label for="quantity">Quantity: </label>
+<input type="text" name="quantity" placeholder="quantity" disabled value="<?php echo $_GET['quantity']; ?>" ><br/><br/>
+<br>
+<label for="price">Price: </label>
+<input type="text" name="price" placeholder="price" disabled value="<?php echo $_GET['price']; ?>" ><br/><br/>
+<br>
 <div class="row">
-            <div class="col-xl-6 form-group">
-
+<div class="col-xl-6 form-group">
 <label for="email">Email: </label>
-<input id="email" class="form-control" maxlength="50" name="email" type="email"  required />
+<input id="email" class="form-control" maxlength="50" name="email" type="email" required />
 
     </div>
-    <div class="col-xl-6 form-group">
-
-
+    <div class="form-group mt-3">
 <label for="firstname">Firstname: </label>
-<input id="firstname" class="form-control" maxlength="50" name="firstname" type="text" required />
+<input id="firstname" class="form-control" maxlength="50" name="name" type="text" required />
 
     </div>
     <div class="form-group mt-3">
 
 <label for="lastname">Lastname: </label>
 <input id="lastname" class="form-control" maxlength="50" name="lastname" type="text" required/>
-
-    </div>
     <div class="form-group mt-3">
 
 <label for="street">Street:</label>
-<input id="street" class="form-control" maxlength="100" name="street" type="text" required/>
+<input id="street" class="form-control" maxlength="100" name="address" type="text" required/>
 
     </div>
     <div class="form-group mt-3">
@@ -177,46 +158,36 @@
 <br>
 <br>
     </div>
-     <div class="form-group mt-3">
-
-<label for="cardno">Card No</label>
-<input id="cardno" class="form-control" name="cardno" type="text"  required/>
-
-
-    </div>
-     <div class="form-group mt-3">
-
-<label for="name">Name </label>
-<input id="name" class="form-control" maxlength="50" name="name" type="text"  required/>
-
-
-    </div>
-     <div class="form-group mt-3">
-
-<label for="date">Expiry Date </label>
-<input id="expirydate" class="form-control" name="date" type="text"  required/>
-
-
-    </div>
-     <div class="form-group mt-3">
-
-<label for="CVC">CVC </label>
-<input id="CVC" class="form-control" name="CVC" type="text"  required/>
-
     <br>
     <br>
     </div>
-    <div class="form-group">
+ <script
+                src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                data-key="pk_test_51MvZ4GGUXI7wa9NZ3KaHu0M0hVVfp0aMyGNWw5kmK5p08liuS0ZGQq6YuL241THoUXzeHsobTxZJ7mjSUk63M2kp00UjLQvsGu"
+                data-amount="<?php echo str_replace(",","",$_GET["price"]) * 100?>"
+                data-name="<?php echo $_GET["product_name"]?>"
+                data-description="<?php echo $_GET["product_name"]?>"
+                data-image="<?php echo $_GET["image"]?>"
+                data-currency="inr"
+                data-locale="auto">
+                <?php
+     if (isset($_SESSION['email'])) {
+        $id = $_GET['id'];
+        $name = $_GET['name'];
+        $quantity = $_GET['quantity'];
+        $price = $_GET['price'];
+        $email = $_SESSION['email'];
+        $query   = "INSERT into Checkout (id,name,quantity,price,email)
+                     VALUES ('$id', '$name','$quantity','$price','$email')";
+        $result   = mysqli_query($con, $query);
+      }
 
-<input class="btn btn-danger" name="Submit" type="Submit" value="Checkout" />
-
-    </div>
+?>
+                </script>
     </div>
     </div>
 </form>
-<?php
-    }
-?>
+
 
 <br>
 <br>

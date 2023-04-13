@@ -168,13 +168,15 @@ if(isset($_SESSION["cart_item"])){
         <td  style="text-align:right;"><?php echo "$ ".$item["Price"]; ?></td>
         <td  style="text-align:right;"><?php echo "$ ". number_format($item_price,2); ?></td>
         <td style="text-align:center;"><a href="product.php?action=remove&name=<?php echo $item["name"]; ?>" class="btnRemoveAction"><img src="assets/img/delete.png" alt="Remove Item" /></a></td>
-        </tr>
         <?php
         $total_quantity += $item["quantity"];
         $total_price += ($item["Price"]*$item["quantity"]);
-    }
     ?>
-
+    <td style="text-align:center;"><a href="checkout.php?&name=<?php echo $item["name"]?>&id=<?php echo $item["id"]?>&quantity=<?php echo $item["quantity"]?>&iimage=<?php echo $item["image"]?>&price=<?php echo $item["Price"]*$item["quantity"]; ?>" class="btnRemoveAction" />Checkout</a></td>
+    </tr>
+    <?php 
+  }
+  ?>
 <tr>
 <td colspan="2" align="right">Total:</td>
 <td align="right"><?php echo $total_quantity; ?></td>
@@ -184,6 +186,7 @@ if(isset($_SESSION["cart_item"])){
 </tbody>
 </table>    
   <?php
+       
 } else {
 ?>
 <br>
