@@ -1,13 +1,6 @@
-<?php
-//include auth_session.php file on all user panel pages
-require('db.php');
-include("auth_session.php");
-include("protect.php");
-?>
-
 <html>
 <head>
-<title>Add Product</title>
+<title>Login</title>
 
 <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -42,36 +35,40 @@ include("protect.php");
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
 </head>
-
-
 <?php
-    require('db.php');
-    // When form submitted, insert values into the database.
-    if (isset($_REQUEST['id'])) {
-        $id    = stripslashes($_REQUEST['id']);
-        $name    = stripslashes($_REQUEST['name']);
-        $category = stripslashes($_REQUEST['category']);
-        $description = stripslashes($_REQUEST['description']);
-        $image = stripslashes($_REQUEST['image']);
-       
-        $query    = "INSERT into pizza (id,name,category,description,image)
-                     VALUES ('$id', '$name','$category','$description','$image')";
-        $result   = mysqli_query($con, $query);
-        if ($result) {
-            echo "<div class='form'>
-                  <h3>YData entered successfully.</h3><br/>
-                  <p class='link'>Click here to <a href='product.php'> View the Product</a></p>
-                  </div>";
-        } else {
-            echo "<div class='form'>
-                  <h3>Error.</h3><br/>
-                  <p class='link'>Click here to <a href='addproduct.php'>Add Product</a> again.</p>
-                  </div>";
-        }
-    }else {
-?>
- <!-- ======= Header ======= -->
-  <header id="header" class="header fixed-top d-flex align-items-center">
+include_once('db.php');
+if(isset($_REQUEST['pwdrst']))
+{
+  $email = $_REQUEST['email'];
+  $pwd = md5($_REQUEST['pwd']);
+  $cpwd = md5($_REQUEST['cpwd']);
+  if($pwd == $cpwd)
+  {
+    $reset_pwd = mysqli_query($con,"update users set password='$pwd' where email='$email'");
+    if($reset_pwd>0)
+    {
+      $msg = 'Your password updated successfully <a href="index.php">Click here</a> to login';
+    }
+    else
+    {
+      $msg = "Error while updating password.";
+    }
+  }
+  else
+  {
+    $msg = "Password and Confirm Password do not match";
+  }
+}
+
+if($_GET['secret'])
+{
+  $email = base64_decode($_GET['secret']);
+  $check_details = mysqli_query($con,"select email from users where email='$email'");
+  $res = mysqli_num_rows($check_details);
+  if($res>0)
+    { ?>
+      <!-- ======= Header ======= -->
+<header id="header" class="header fixed-top d-flex align-items-center">
     <div class="container d-flex align-items-center justify-content-between">
 
       <a href="index.html" class="logo d-flex align-items-center me-auto me-lg-0">
@@ -82,13 +79,10 @@ include("protect.php");
 
       <nav id="navbar" class="navbar">
         <ul>
-           <li><a href="#hero">Home</a></li>
+          <li><a href="#hero">Home</a></li>
           <li><a href="#about">About</a></li>
           <li><a href="#contact">Contact</a></li>
-          <li><a href="admin.php">Admin</a></li>
-          <li><a href="addproduct.php">Add Product</a></li>
-          <li><a href="product.php">Menu</a></li>
-          <li><a href="logout.php">Logout</a></li>
+          <li><a href="login.php">Login</a></li>
         </ul>
       </nav><!-- .navbar -->
 
@@ -117,73 +111,36 @@ include("protect.php");
       </div>
     </div>
   </section><!-- End Hero Section -->
-
-
-  <main id="main">
-    <body>
-        <br>
-<tbody>
-<center>
-<table>
-<form  method="post">
-<div class="row">
-            <div class="col-xl-6 form-group">
-<tr>
-<td><label for="id">Id: </label></td>
-<td><input id="id" class="form-control" name="id" type="number" required /></td>
-</tr>
-    </div>
-    <div class="col-xl-6 form-group">
-
-<tr>
-<td><label for="name">Name: </label></td>
-<td><input id="name" class="form-control" maxlength="50" name="name" type="text" required/></td>
-</tr>
-    </div>
-    <div class="form-group">
-<tr>
-<td><label for="category">Category: </label></td>
-<td><input id="category" class="form-control" maxlength="50" name="category" type="text" required/></td>
-</tr>
-    </div>
-    <div class="form-group">
-<tr>
-<td><label for="description">Description</label></td>
-<td><input id="description" class="form-control" maxlength="50" name="description" type="text" required/></td>
-</tr>
-
-    </div>
-    <div class="form-group">
-<tr>
-<td><label for="image">Image:</label></td>
-<td><input id="image" class="form-control" maxlength="100" name="image" type="text" required/></td>
-</tr>
-    </div>
-    
+<body>
+<div class="container">  
+    <div class="table-responsive">  
+    <h3 align="center">Reset Password</h3><br/>
+    <div class="box">
+     <form id="validate_form" method="post" >  
+      <input type="hidden" name="email" value="<?php echo $email; ?>"/>
+      <div class="form-group">
+       <label for="pwd">Password</label>
+       <input type="password" name="pwd" id="pwd" placeholder="Enter Password" required 
+       data-parsley-type="pwd" data-parsley-trigg
+       er="keyup" class="form-control"/>
+      </div>
+      <div class="form-group">
+       <label for="cpwd">Confirm Password</label>
+       <input type="password" name="cpwd" id="cpwd" placeholder="Enter Confirm Password" required data-parsley-type="cpwd" data-parsley-trigg
+       er="keyup" class="form-control"/>
+      </div>
+      <div class="form-group">
+       <input type="submit" id="login" name="pwdrst" value="Reset Password" class="btn btn-success" />
+       </div>
+       
+       <p class="error"><?php if(!empty($msg)){ echo $msg; } ?></p>
+     </form>
+     </div>
+   </div>  
+  </div>
+<?php } } ?>
 <br>
-<br>
-    
-    <div class="form-group">
-    <div class="container">
-    <div class="row justify-content-center">
-<tr>
-<td><input class="btn btn-danger" name="Submit" type="Submit" width="100px" value="Add Product" /></td>
-</tr>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-</form>
-<?php
-    }
-?>
-</table>
-</center>
-<br>
-</tbody>
-</main><!-- End #main -->
-  <!-- ======= About Section ======= -->
+<!-- ======= About Section ======= -->
     <section id="about" class="about">
       <div class="container" data-aos="fade-up">
 
@@ -282,7 +239,6 @@ include("protect.php");
 
       </div>
     </section><!-- End Book A Table Section -->
-
 
     <!-- ======= Contact Section ======= -->
     <section id="contact" class="contact">

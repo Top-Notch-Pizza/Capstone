@@ -40,17 +40,19 @@
     session_start();
     // When form submitted, check and create user session.
     if (isset($_POST['email'])) {
+        $usertype=$_REQUEST['usertype'];
         $email = stripslashes($_REQUEST['email']);    // removes backslashes
         $email = mysqli_real_escape_string($con, $email);
         $password = stripslashes($_REQUEST['password']);
         $password = mysqli_real_escape_string($con, $password);
         // Check user is exist in the database
-        $query    = "SELECT * FROM  users  WHERE email='$email'
+        $query    = "SELECT * FROM  users  WHERE email='$email' AND usertype='$usertype'
                      AND password='" . md5($password) . "'";
         $result = mysqli_query($con, $query) or die(mysql_error());
-        $rows = mysqli_num_rows($result);
-        if ($rows == 1) {
+        $row = mysqli_num_rows($result);
+        if ($row > 0) {
             $_SESSION['email'] = $email;
+            $_SESSION['usertype'] = $usertype;
             // Redirect to user dashboard page
             header("Location: index.php");
         } else {
@@ -134,9 +136,15 @@
 
     </div>
     </br>
+    <div class="form-group mt-5">
+    <label for="usertype">Usertype: </label>
+<input class="form-control" id="usertype" name="usertype" required />
+
+    </div>
+    </br>
     
     <div class="form-group mt-5">
-
+<a href="forgotpassword.php">Forgot Password</a>
 <input class="btn btn-danger" style="margin-top:15px" name="Submit" type="Submit" value="Login" />
 
     </div>

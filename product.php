@@ -156,6 +156,8 @@ if(isset($_SESSION["cart_item"])){
 <th style="text-align:right;" width="10%">Unit Price</th>
 <th style="text-align:right;" width="10%">Price</th>
 <th style="text-align:center;" width="5%">Remove</th>
+<th style="text-align:center;" width="5%">Checkout</th>
+<th style="text-align:center;" width="5%">Takeout</th>
 </tr> 
 <?php   
     foreach ($_SESSION["cart_item"] as $item){
@@ -173,6 +175,7 @@ if(isset($_SESSION["cart_item"])){
         $total_price += ($item["Price"]*$item["quantity"]);
     ?>
     <td style="text-align:center;"><a href="checkout.php?&name=<?php echo $item["name"]?>&id=<?php echo $item["id"]?>&quantity=<?php echo $item["quantity"]?>&iimage=<?php echo $item["image"]?>&price=<?php echo $item["Price"]*$item["quantity"]; ?>" class="btnRemoveAction" />Checkout</a></td>
+    <td style="text-align:center;"><a href="takeout.php?&name=<?php echo $item["name"]?>&id=<?php echo $item["id"]?>&quantity=<?php echo $item["quantity"]?>&iimage=<?php echo $item["image"]?>&price=<?php echo $item["Price"]*$item["quantity"]; ?>" class="btnRemoveAction" />Takeout</a></td>
     </tr>
     <?php 
   }
@@ -282,12 +285,13 @@ if(isset($_GET['category']))
                         <h2 class="mb-4"><?=  $proditems['category']; ?></h2>
                         <form method="post" action="product.php?action=add&name=<?= $proditems['name']; ?>">
                             <p class="h6 mb-4 text-success"><?=   $proditems['description']; ?></p>
-                            <img src="assets/img/<?=  $proditems["image"]; ?>">
+                            <img src="assets/img/<?=  $proditems["image"]; ?>" class="imageres">
                             <div><?=  $proditems["name"]; ?></div>
                             <div><?=  $proditems["Price"]; ?></div>
                             <p class="h6 mb-4 text-success"><?=  $proditems['Calories']; ?></p>
                             <input type="text" class="product-quantity" name="quantity" value="1" size="2" />
-                            &nbsp<input class="btn btn-danger" type="submit" value="Add to Cart" class="btnAddAction" />
+                            &nbsp<input class="btn btn-danger" type="submit" value="Add to Cart" />
+                          
                         </div>
                     </div>
                     </div>
@@ -309,12 +313,13 @@ else
       <h2 class="mb-4"><?php  echo $product_array[$key]['category']; ?></h2>
         <form method="post" action="product.php?action=add&name=<?php echo $product_array[$key]["name"]; ?>">
         <p class="h6 mb-4 text-success"><?php echo $product_array[$key]['description']; ?></p>
-        <img src="assets/img/<?php echo $product_array[$key]["image"]; ?>">
+        <img src="assets/img/<?php echo $product_array[$key]["image"]; ?>" class="imageres">
         
       <div><?php echo $product_array[$key]["name"]; ?></div>
       <div><?php echo "$".$product_array[$key]["Price"]; ?></div>
       <p class="h6 mb-4 text-success"><?php echo $product_array[$key]['Calories']; ?></p>
       <input type="text" class="product-quantity" name="quantity" value="1" size="2" /><input type="submit" value="Add to Cart" class="btnAddAction" />
+
       </div>
     </div>
     </div>
